@@ -4,12 +4,13 @@ import face_recognition
 import os
 import time
 import xlsxwriter
+import csv
 from datetime import datetime
 
 
 
  
-path = 'image'
+path = 'img'
 images = []
 classNames = []
 myList = os.listdir(path)
@@ -21,6 +22,7 @@ for cl in myList:
 now = datetime.now()
 dtString = now.strftime('%H:%M:%S')
 print("encoding starting time " + dtString)
+
 def findEncodings(images):
     encodeList = []
     for img in images:
@@ -29,25 +31,52 @@ def findEncodings(images):
         encodeList.append(encode)
     return encodeList
 
+def timeInterval(s1,s2):
 
+    FMT = '%H:%M:%S'
+    tdelta = datetime.strptime(s2, FMT) - datetime.strptime(s1, FMT)
+    if tdelta>2:
+        return True
+    else: return False    
 
 
 def markAttendance(name,result):
-    with open('test.csv','r+',encoding='utf-8-sig',newline='') as f:
+    with open('Book1.csv','r+',encoding='utf-8-sig',newline='') as f:
         myDataList = f.readlines()
         nameList = []
+        time = []
+
         for line in myDataList:
+            # print(line)
             entry = line.split(',')
+            # if entry.startswith('\ufeff'):
+            #     entry = entry.encode('utf8')[3:].decode('utf8')
+
+            # print(entry[0])
+
             nameList.append(entry[0])
-        if name not in nameList:
-            now = datetime.now()
-            dtString = now.strftime('%H:%M:%S')+'\n'
-            f.write(f' {name},{result},{dtString}   ')
+            time.append(entry[2])
+            print(time)
+        
+        now = datetime.now()
+        dtString = now.strftime('%H:%M:%S') 
+        result = str(result)+'\n' 
+
+        if ("\ufeff "+name) not in nameList:
+
+            f.write(f' {name},{dtString},{result} ')
             
             #f.writelines(f'{name},{dtString}')
 
             print('Name: '+ name + '\n' + 'Date: ' + dtString)
-        f.close()      
+        elif  ("\ufeff "+name) in nameList:
+            if  timeInterval(time in entry[2] ,now) == True:
+                f.write(f' {name},{dtString},{result} ')
+                print('Name: '+ name + '\n' + 'Date: ' + dtString)
+
+        f.close() 
+        
+             
            
  
 encodeListKnown = findEncodings(images)
@@ -85,7 +114,9 @@ while True:
                 cv2.putText(img, show,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),2)
 
                 
+                #time.sleep(2)
                 markAttendance(name,result)
+                
                 # testing(name,result)
     cv2.imshow('Webcam',img)
     if cv2.waitKey(2) == 27:
