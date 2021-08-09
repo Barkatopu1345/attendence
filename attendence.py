@@ -5,6 +5,7 @@ import os
 import time
 from datetime import datetime
 import openpyxl
+import openpyxl.styles
 import pandas as pd
 from pathlib import Path
 
@@ -23,7 +24,20 @@ for cl in myList:
 now = datetime.now()
 dtString = now.strftime('%H:%M:%S')
 print("encoding starting time " + dtString)
-def findEncodings(images):
+
+
+
+def timeInterval(s1,s2):
+
+    FMT = '%Y-%m-%d %H:%M:%S.%f'
+    
+    tdelta = datetime.strptime(str(s1), FMT) - datetime.strptime(str(s2), FMT)
+    if tdelta.seconds>((3000/1000)%60):
+        print(tdelta)
+        return True
+    else: return False
+
+def findEncodings(images): 
     encodeList = []
     for img in images:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -32,71 +46,134 @@ def findEncodings(images):
     return encodeList
 
 
-def test(name,result):
+# def createSheet():
+#     path = ('name.xlsx')
+
+#     wb_obj = openpyxl.load_workbook(path)
+#     now = datetime.now()
+#     name = now.strftime('%H:%M:%S')
+#     wb_obj.create_sheet("New sheet")
+#     wb_obj.save('name.xlsx') 
+#     wb_obj.close()
+
+
+
+
+def createSheet():
     path = ('name.xlsx')
 
     wb_obj = openpyxl.load_workbook(path)
-    sheet = wb_obj["Sheet1"]
+    now = datetime.now()
+    #name = str(now.strftime('%dth%b, %Y'))
+    name = str(now.strftime('%dth%b, %Y'))
+
+    print(name)
+
+    ws = wb_obj.worksheets[-1]
+    sh = str(ws).split('"')
+    s = sh[1]
+    print(s+" Printing here")
+    if(name != s):
+        wb_obj.create_sheet(name)
+    else: name = s
+    print("done")
+
+    wb_obj.save('name.xlsx') 
+    
+    ws = wb_obj.worksheets[-1]
+    sh = str(ws).split('"')
+    s = sh[1]
+    print(type(s))
+    wb_obj.close()
+    return s
 
 
-    # print(sheet.max_row, sheet.max_column)
+
+
+def test(name,result,sheetName):
+    path = ('name.xlsx')
+
+    wb_obj = openpyxl.load_workbook(path)
+    wb_obj.iso_dates = True
+    
+    sheet = wb_obj[sheetName]
+
+
     __row__ = sheet.max_row
     column = sheet.max_column
+    print("column: " + str(column))
     list = []
     
     print("row num: "+ str(__row__))
     for i in range(2,__row__+1):
         list.append(sheet.cell(i,1).value)
-        list.append(sheet.cell(i,2).value)
-        list.append(sheet.cell(i,3).value)
-    if name in list:
-        x = list.index(name)
-        print(x)
-    print(list)
+    
+
+    row = __row__
+    now = datetime.now()
+    dtString = now.strftime('%H:%M:%S.%f')
+    
     if name not in list:
-        row = __row__
-        now = datetime.now()
-        dtString = now.strftime('%H:%M:%S')
         sheet.cell(row+1,1,value=name)
-        sheet.cell(row+1,2,value=result)
-        sheet.cell(row+1,3,value=now)   
-        print('test')
+        sheet.cell(row+1,2,value=now) 
+        sheet.cell(row+2,2,value=result)
+          
 
         print('test: '+ name + '\n' + 'Date: ' + dtString)
+   
     elif name in list:
+        timeList = []
+        index = list.index(name)
+        print("indext: "+str(index))
+        for i in range(1,column+1):
+            if ((sheet.cell(index+2,i).value != None)):
+                timeList.append(sheet.cell(index+2,i).value)
         
-    wb_obj.save('name.xlsx') 
+        print(timeList)
+        length = len(timeList)
+        print(timeList[length-1])
 
-
-
-
-def markAttendance(name,result):
-    with open('test.csv','r+',encoding='utf-8-sig',newline='') as f:
-        myDataList = f.readlines()
-        nameList = []
-        for line in myDataList:
-            # print(line)
-
-            entry = line.split(',')
-            nameList.append(entry[0])
-        if name not in nameList:
-            now = datetime.now()
-            dtString = now.strftime('%H:%M:%S')+'\n'
-            #f.write(f' {name},{result},{dtString}   ')
+        oldTime = timeList[length-1]
+        print(sheet.cell(index+2,column).value)
+        if timeInterval(now,oldTime) == True:
+            sheet.cell(index+2, length+1, value=now)
+            sheet.cell(index+3, length+1, value=result)  
             
-            #f.writelines(f'{name},{dtString}')
 
-            print('Name: '+ name + '\n' + 'Date: ' + dtString)
-        f.close()      
+         
+    wb_obj.save('name.xlsx') 
+    wb_obj.close()
+
+
+
+
+# def markAttendance(name,result):
+#     with open('test.csv','r+',encoding='utf-8-sig',newline='') as f:
+#         myDataList = f.readlines()
+#         nameList = []
+#         for line in myDataList:
+#             # print(line)
+
+#             entry = line.split(',')
+#             nameList.append(entry[0])
+#         if name not in nameList:
+#             now = datetime.now()
+#             dtString = now.strftime('%H:%M:%S')+'\n'
+#             #f.write(f' {name},{result},{dtString}   ')
+            
+#             #f.writelines(f'{name},{dtString}')
+
+#             print('Name: '+ name + '\n' + 'Date: ' + dtString)
+#         f.close()      
            
  
 encodeListKnown = findEncodings(images)
 now = datetime.now()
 dtString = now.strftime('%H:%M:%S')
 print('Encoding Complete' + dtString)
- 
+sheetName = createSheet()
 cap = cv2.VideoCapture(0)
- 
+
 while True:
     success, img = cap.read()
     #img = captureScreen()
@@ -124,7 +201,7 @@ while True:
                 cv2.rectangle(img,(x1,y2-35),(x2,y2),(0,255,0),cv2.FILLED)
                 cv2.putText(img, show,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),2)
 
-                test(name,result)
+                test(name,result,sheetName)
                 # markAttendance(name,result)
                 
                 

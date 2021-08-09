@@ -1,14 +1,37 @@
-# import cv2
-# import numpy as np
-# import face_recognition
-# import os
-# import time
-# import xlsxwriter
-# from datetime import datetime
+import cv2
+import numpy as np
+import face_recognition
+import os
+import time
+import openpyxl
+from datetime import datetime
 
+def createSheet():
+    path = ('test.xlsx')
 
+    wb_obj = openpyxl.load_workbook(path)
+    now = datetime.now()
+    #name = str(now.strftime('%dth%b, %Y'))
+    name = str(now.strftime('%H%M'))
 
- 
+    print(name)
+    ws = wb_obj.worksheets[-1]
+    sh = str(ws).split('"')
+    if(sh != name):
+        wb_obj.create_sheet(name)
+    else: name = sh
+    
+    sheet = wb_obj[name]
+    sheet.cell(2,2,value = 'test')
+    sheet.cell(3,2,value = 'test02')
+    wb_obj.save('test.xlsx') 
+    
+    ws = wb_obj.worksheets[-1]
+    sh = str(ws).split('"')
+    print(sh[1])
+    wb_obj.close()
+
+createSheet()
 # path = 'image'
 # images = []
 # classNames = []
@@ -93,14 +116,14 @@
 #         break
 
 
-import openpyxl
-from pathlib import Path
+# import openpyxl
+# from pathlib import Path
 
-path = ('E:\Senior project\attendence-main\face_detection\project\testing\Expenses03.xlsx')
+# path = ('E:\Senior project\attendence-main\face_detection\project\testing\Expenses03.xlsx')
 
-wb_obj = openpyxl.load_workbook(path)
-sheet = wb_obj.active
-print(sheet.max_row, sheet.max_column)
+# wb_obj = openpyxl.load_workbook(path)
+# sheet = wb_obj.active
+# print(sheet.max_row, sheet.max_column)
 
 
 
