@@ -22,7 +22,7 @@ for cl in myList:
     classNames.append(os.path.splitext(cl)[0])
 
 now = datetime.now()
-dtString = now.strftime('%H:%M:%S')
+dtString = now.strftime("%H:%M:%S")
 print("encoding starting time " + dtString)
 
 
@@ -114,7 +114,7 @@ def test(name,result,sheetName):
 
     row = __row__
     now = datetime.now()
-    dtString = now.strftime('%H:%M:%S.%f')
+    dtString = now.strftime("%H-%M-%S")
     sheet.cell(1,1,value = "Name")
     sheet.cell(1,1).font = Font(bold = True)
 
@@ -123,7 +123,7 @@ def test(name,result,sheetName):
         sheet.cell(row+1,2,value = "Time")
         sheet.cell(row+1,2).font = Font(bold = True)
         sheet.cell(row+1,3,value=now) 
-        sheet.cell(row+1,3).number_format ='MM,DD,YYYY,HH,MM,MM'
+        sheet.cell(row+1,3).number_format ="HH:MM:SS"
 
         sheet.cell(row+2,2,value="Matching(%)")
         sheet.cell(row+2,2).font = Font(bold = True)
@@ -153,6 +153,7 @@ def test(name,result,sheetName):
         if timeInterval(now,oldTime) == True:
             sheet.cell(index+2, length+1, value=now)
             #sheet.cell(index+2, length+1).style = highlight
+            sheet.cell(index+2,length+1).number_format ="HH:MM:SS"
             sheet.cell(index+3, length+1, value=result)  
             
 
@@ -162,30 +163,11 @@ def test(name,result,sheetName):
 
 
 
-
-# def markAttendance(name,result):
-#     with open('test.csv','r+',encoding='utf-8-sig',newline='') as f:
-#         myDataList = f.readlines()
-#         nameList = []
-#         for line in myDataList:
-#             # print(line)
-
-#             entry = line.split(',')
-#             nameList.append(entry[0])
-#         if name not in nameList:
-#             now = datetime.now()
-#             dtString = now.strftime('%H:%M:%S')+'\n'
-#             #f.write(f' {name},{result},{dtString}   ')
-            
-#             #f.writelines(f'{name},{dtString}')
-
-#             print('Name: '+ name + '\n' + 'Date: ' + dtString)
-#         f.close()      
-           
+        
  
 encodeListKnown = findEncodings(images)
 now = datetime.now()
-dtString = now.strftime('%H:%M:%S')
+dtString = now.strftime("%H-%M-%S")
 print('Encoding Complete' + dtString)
 sheetName = createSheet()
 print("test01")
