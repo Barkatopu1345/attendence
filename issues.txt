@@ -1,0 +1,2 @@
+1) same two pictues can not encode separetly
+2) Invalid SOS parameters for sequential JPEG

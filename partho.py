@@ -12,38 +12,29 @@ from pathlib import Path
 
 
  
-path = 'image'
-images = []
-classNames = []
-myList = os.listdir(path)
-for cl in myList:
-    curImg = cv2.imread(f'{path}/{cl}')
-    images.append(curImg)
-    classNames.append(os.path.splitext(cl)[0])
-
-now = datetime.now()
-dtString = now.strftime("%H:%M:%S")
-print("encoding starting time " + dtString)
+# path = 'image'
+# images = []
+# classNames = []
+# myList = os.listdir(path)
+# for cl in myList:
+#     curImg = cv2.imread(f'{path}/{cl}')
+#     images.append(curImg)
+#     classNames.append(os.path.splitext(cl)[0])
 
 
 
-def timeInterval(s1,s2):
 
-    FMT = '%Y-%m-%d %H:%M:%S.%f'
+
+# def timeInterval(s1,s2):
+
+#     FMT = '%Y-%m-%d %H:%M:%S.%f'
     
-    tdelta = datetime.strptime(str(s1), FMT) - datetime.strptime(str(s2), FMT)
-    if tdelta.seconds>((3000/1000)%60):
-        print(tdelta)
-        return True
-    else: return False
+#     tdelta = datetime.strptime(str(s1), FMT) - datetime.strptime(str(s2), FMT)
+#     if tdelta.seconds>((3000/1000)%60):
+#         print(tdelta)
+#         return True
+#     else: return False
 
-def findEncodings(images): 
-    encodeList = []
-    for img in images:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        encode = face_recognition.face_encodings(img)[0]
-        encodeList.append(encode)
-    return encodeList
 
 
 # def createSheet():
@@ -59,180 +50,205 @@ def findEncodings(images):
 
 
 
-def createSheet():
-    path = ('name.xlsx')
+# def createSheet():
+#     path = ('name.xlsx')
 
-    wb_obj = openpyxl.load_workbook(path)
-    now = datetime.now()
-    #name = str(now.strftime('%dth%b, %Y'))
-    name = str(now.strftime('%dth%b, %Y'))
+#     wb_obj = openpyxl.load_workbook(path)
+#     now = datetime.now()
+#     #name = str(now.strftime('%dth%b, %Y'))
+#     name = str(now.strftime('%dth%b, %Y'))
 
-    print(name)
+#     print(name)
 
-    ws = wb_obj.worksheets[-1]
-    sh = str(ws).split('"')
-    s = sh[1]
-    print(s+" Printing here")
-    if(name != s):
-        wb_obj.create_sheet(name)
-    else: name = s
+#     ws = wb_obj.worksheets[-1]
+#     sh = str(ws).split('"')
+#     s = sh[1]
+#     print(s+" Printing here")
+#     if(name != s):
+#         wb_obj.create_sheet(name)
+#     else: name = s
 
 
-    print("done")
+#     print("done")
 
-    wb_obj.save('name.xlsx') 
+#     wb_obj.save('name.xlsx') 
     
-    ws = wb_obj.worksheets[-1]
-    sh = str(ws).split('"')
-    s = sh[1]
-    print(type(s))
-    wb_obj.close()
-    return s
+#     ws = wb_obj.worksheets[-1]
+#     sh = str(ws).split('"')
+#     s = sh[1]
+#     print(type(s))
+#     wb_obj.close()
+#     return s
 
 
 
 
-def test(name,result,sheetName):
-    path = ('name.xlsx')
+# def test(name,result,sheetName):
+#     path = ('name.xlsx')
 
-    wb_obj = openpyxl.load_workbook(path)
-    wb_obj.iso_dates = True
-    # highlight = NamedStyle(name="highlight", number_format='MM/DD/YYYY HH:MM:MM')
-    # wb_obj.add_named_style(highlight)
-    sheet = wb_obj[sheetName]
+#     wb_obj = openpyxl.load_workbook(path)
+#     wb_obj.iso_dates = True
+#     # highlight = NamedStyle(name="highlight", number_format='MM/DD/YYYY HH:MM:MM')
+#     # wb_obj.add_named_style(highlight)
+#     sheet = wb_obj[sheetName]
 
 
-    __row__ = sheet.max_row
-    column = sheet.max_column
-    print("column: " + str(column))
-    list = []
+#     __row__ = sheet.max_row
+#     column = sheet.max_column
+#     print("column: " + str(column))
+#     list = []
     
-    print("row num: "+ str(__row__))
-    for i in range(2,__row__+1):
-        list.append(sheet.cell(i,1).value)
+#     print("row num: "+ str(__row__))
+#     for i in range(2,__row__+1):
+#         list.append(sheet.cell(i,1).value)
     
 
-    row = __row__
-    now = datetime.now()
-    dtString = now.strftime("%H-%M-%S")
-    sheet.cell(1,1,value = "Name")
-    sheet.cell(1,1).font = Font(bold = True)
+#     row = __row__
+#     now = datetime.now()
+#     dtString = now.strftime("%H-%M-%S")
+#     sheet.cell(1,1,value = "Name")
+#     sheet.cell(1,1).font = Font(bold = True)
 
-    if name not in list:
-        sheet.cell(row+1,1,value=name)
-        sheet.cell(row+1,2,value = "Time")
-        sheet.cell(row+1,2).font = Font(bold = True)
-        sheet.cell(row+1,3,value=now) 
-        sheet.cell(row+1,3).number_format ="HH:MM:SS"
+#     if name not in list:
+#         sheet.cell(row+1,1,value=name)
+#         sheet.cell(row+1,2,value = "Time")
+#         sheet.cell(row+1,2).font = Font(bold = True)
+#         sheet.cell(row+1,3,value=now) 
+#         sheet.cell(row+1,3).number_format ="HH:MM:SS"
 
-        sheet.cell(row+2,2,value="Matching(%)")
-        sheet.cell(row+2,2).font = Font(bold = True)
-        sheet.cell(row+2,3,value=result)
+#         sheet.cell(row+2,2,value="Matching(%)")
+#         sheet.cell(row+2,2).font = Font(bold = True)
+#         sheet.cell(row+2,3,value=result)
           
 
-        print('test: '+ name + '\n' + 'Date: ' + dtString)
+#         print('test: '+ name + '\n' + 'Date: ' + dtString)
    
-    elif name in list:
-        timeList = []
-        index = list.index(name)
-        print("indext: "+str(index))
-        for i in range(1,column+1):
-            if ((sheet.cell(index+2,i).value != None)):
-                timeList.append(sheet.cell(index+2,i).value)
+#     elif name in list:
+#         timeList = []
+#         index = list.index(name)
+#         print("indext: "+str(index))
+#         for i in range(1,column+1):
+#             if ((sheet.cell(index+2,i).value != None)):
+#                 timeList.append(sheet.cell(index+2,i).value)
         
-        print(timeList)
-        length = len(timeList)
-        print(timeList[length-1])
+#         print(timeList)
+#         length = len(timeList)
+#         print(timeList[length-1])
 
-        oldTime = timeList[length-1]
-        print("Time test: ")
-        print(oldTime)
-        print(type(oldTime))
-        print("Time test: ")
-        print(sheet.cell(index+2,column).value)
-        if timeInterval(now,oldTime) == True:
-            sheet.cell(index+2, length+1, value=now)
-            #sheet.cell(index+2, length+1).style = highlight
-            sheet.cell(index+2,length+1).number_format ="HH:MM:SS"
-            sheet.cell(index+3, length+1, value=result)  
+#         oldTime = timeList[length-1]
+#         print("Time test: ")
+#         print(oldTime)
+#         print(type(oldTime))
+#         print("Time test: ")
+#         print(sheet.cell(index+2,column).value)
+#         if timeInterval(now,oldTime) == True:
+#             sheet.cell(index+2, length+1, value=now)
+#             #sheet.cell(index+2, length+1).style = highlight
+#             sheet.cell(index+2,length+1).number_format ="HH:MM:SS"
+#             sheet.cell(index+3, length+1, value=result)  
             
 
          
-    wb_obj.save('name.xlsx') 
-    wb_obj.close()
+#     wb_obj.save('name.xlsx') 
+#     wb_obj.close()
+
+
+def findEncodings(images): 
+    encodeList = []
+    for img in images:
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        encode = face_recognition.face_encodings(img)[0]
+        encodeList.append(encode)
+    return encodeList
 
 
 
-        
- 
-encodeListKnown = findEncodings(images)
-now = datetime.now()
-dtString = now.strftime("%H-%M-%S")
-print('Encoding Complete' + dtString)
-sheetName = createSheet()
-print("test01")
-cap = cv2.VideoCapture(0)
+def partho(): 
+    path = 'photos'
+    images = []
+    classNames = []
+    myList = os.listdir(path)
+    for cl in myList:
+        curImg = cv2.imread(f'{path}/{cl}')
+        images.append(curImg)
+        classNames.append(os.path.splitext(cl)[0])
 
-while True:
-    success, img = cap.read()
-    #img = captureScreen()
-    imgS = cv2.resize(img,(0,0),None,0.25,0.25)
-    imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
+    now = datetime.now()
+    first = now.strftime("%H:%M:%S")
+    print("encoding starting time " + first)
+
+    encodeListKnown = findEncodings(images)
+    now = datetime.now()
+    second = now.strftime("%H-%M-%S")
+    print('Encoding Complete ' + second)
+
+def printH():
+    print("Hello world")
+
+# sheetName = createSheet()
+# print("test01")
+# cap = cv2.VideoCapture(0)
+
+# while True:
+#     success, img = cap.read()
+#     #img = captureScreen()
+#     imgS = cv2.resize(img,(0,0),None,0.25,0.25)
+#     imgS = cv2.cvtColor(imgS, cv2.COLOR_BGR2RGB)
     
-    facesCurFrame = face_recognition.face_locations(imgS)
-    encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame)
-    for encodeFace,faceLoc in zip(encodesCurFrame,facesCurFrame):
-        matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
-        faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
-        matchIndex = np.argmin(faceDis)
+#     facesCurFrame = face_recognition.face_locations(imgS)
+#     encodesCurFrame = face_recognition.face_encodings(imgS,facesCurFrame)
+#     for encodeFace,faceLoc in zip(encodesCurFrame,facesCurFrame):
+#         matches = face_recognition.compare_faces(encodeListKnown,encodeFace)
+#         faceDis = face_recognition.face_distance(encodeListKnown,encodeFace)
+#         matchIndex = np.argmin(faceDis)
 
-        print(faceDis[matchIndex])
-        if(faceDis[matchIndex]<0.50):
-            result = faceDis[matchIndex]*100
-            result = 100 - float(result)
+#         print(faceDis[matchIndex])
+#         if(faceDis[matchIndex]<0.50):
+#             result = faceDis[matchIndex]*100
+#             result = 100 - float(result)
 
-            if matches[matchIndex]:
-                name = classNames[matchIndex].upper()
-                show = 'Matching = ' + str(int(result)) + '%  ' +name 
-                y1,x2,y2,x1 = faceLoc
-                y1, x2, y2, x1 = y1*4,x2*4,y2*4,x1*4
-                cv2.rectangle(img,(x1,y1),(x2,y2),(0,255,0),2)
-                cv2.rectangle(img,(x1,y2-35),(x2,y2),(0,255,0),cv2.FILLED)
-                cv2.putText(img, show,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),2)
+#             if matches[matchIndex]:
+#                 name = classNames[matchIndex].upper()
+#                 show = 'Matching = ' + str(int(result)) + '%  ' +name 
+#                 y1,x2,y2,x1 = faceLoc
+#                 y1, x2, y2, x1 = y1*4,x2*4,y2*4,x1*4
+#                 cv2.rectangle(img,(x1,y1),(x2,y2),(0,255,0),2)
+#                 cv2.rectangle(img,(x1,y2-35),(x2,y2),(0,255,0),cv2.FILLED)
+#                 cv2.putText(img, show,(x1+6,y2-6),cv2.FONT_HERSHEY_COMPLEX,0.5,(255,255,255),2)
 
-                test(name,result,sheetName)
-                # markAttendance(name,result)
+#                 test(name,result,sheetName)
+#                 # markAttendance(name,result)
                 
                 
-    cv2.imshow('Webcam',img)
-    if cv2.waitKey(2) == 27:
-        break
+#     cv2.imshow('Webcam',img)
+#     if cv2.waitKey(2) == 27:
+#         break
 
 
-# import cv2
-# import numpy as np
-# import face_recognition
-# import os
-# import time
-# import csv
-# from datetime import datetime
-# import openpyxl
-# from pathlib import Path
+# # import cv2
+# # import numpy as np
+# # import face_recognition
+# # import os
+# # import time
+# # import csv
+# # from datetime import datetime
+# # import openpyxl
+# # from pathlib import Path
 
 
-# c = 0 
-# path = 'img'
-# images = []
-# classNames = []
-# myList = os.listdir(path)
-# for cl in myList:
-#     curImg = cv2.imread(f'{path}/{cl}')
-#     images.append(curImg)
-#     classNames.append(os.path.splitext(cl)[0])
+# # c = 0 
+# # path = 'img'
+# # images = []
+# # classNames = []
+# # myList = os.listdir(path)
+# # for cl in myList:
+# #     curImg = cv2.imread(f'{path}/{cl}')
+# #     images.append(curImg)
+# #     classNames.append(os.path.splitext(cl)[0])
 
-# now = datetime.now()
-# dtString = now.strftime('%H:%M:%S')
-# print("encoding starting time " + dtString)
+# # now = datetime.now()
+# # dtString = now.strftime('%H:%M:%S')
+# # print("encoding starting time " + dtString)
 
 # def findEncodings(images):
 #     encodeList = []
